@@ -1,0 +1,21 @@
+{
+  "name": "spotilocal",
+  "version": "0.0.1",
+  "description": "Library to use spotify's local web server to control spotify desktop application",
+  "main": "index.js",
+  "scripts": {
+    "test": "tsc && mocha"
+  },
+  "keywords": [
+    "spotify"
+  ],
+  "author": "Shyyko Serhiy <shyyko.serhiy@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "ssl-root-cas": "^1.2.2",
+    "superagent": "^2.2.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.0.2"
+  }
+}
