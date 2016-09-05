@@ -1,6 +1,8 @@
 import * as request from 'superagent';
 import * as https from 'https';
 
+export const SPOTILOCAL_IS_NOT_INITIALIZED = 'Spotilocal is not initialized';
+
 export class Spotilocal {
     private spotilocalUrl: string;
     private oauth: string;
@@ -24,7 +26,7 @@ export class Spotilocal {
 
     public getStatus(): Promise<string> {
         if (!this.initialized) {
-            return Promise.reject<string>("Spotilocal is not initialized");
+            return Promise.reject<string>(SPOTILOCAL_IS_NOT_INITIALIZED);
         }
 
         return new Promise((resolve, reject) => {
