@@ -1,6 +1,22 @@
 import * as request from 'superagent';
 import * as https from 'https';
 
+function failIfNotInitialized(target: any, propertyKey: string, descriptor: PropertyDescriptor):PropertyDescriptor{
+    const fn = descriptor.value as Function;
+
+    if (typeof fn !== 'function'){
+        throw new Error(`@failIfNotInitialized can only be applied to method and not to ${typeof fn}`)
+    }
+
+    return Object.assign({}, descriptor, {value: function(){
+        if (!this.initialized) {
+            return Promise.reject<string>(SPOTILOCAL_IS_NOT_INITIALIZED);
+        }         
+        return fn.apply(this, arguments);
+    }})
+
+} 
+
 export const SPOTILOCAL_IS_NOT_INITIALIZED = 'Spotilocal is not initialized';
 
 export class Spotilocal {
@@ -23,12 +39,9 @@ export class Spotilocal {
             return this;
         })
     }
-
-    public getStatus(): Promise<string> {
-        if (!this.initialized) {
-            return Promise.reject<string>(SPOTILOCAL_IS_NOT_INITIALIZED);
-        }
-
+    
+    @failIfNotInitialized
+    public getStatus(): Promise<string> {        
         return new Promise((resolve, reject) => {
             Spotilocal.requestToAbsolutelyUglyNotSecuredRequest(request.get(`${this.spotilocalUrl}remote/status.json?csrf=${this.csrf}&oauth=${this.oauth}`))
                 .end((err, res) => {
