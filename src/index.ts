@@ -1,5 +1,6 @@
 import * as request from 'superagent';
 import * as https from 'https';
+import {Status} from './status';
 
 function failIfNotInitialized(target: any, propertyKey: string, descriptor: PropertyDescriptor):PropertyDescriptor{
     const fn = descriptor.value as Function;
@@ -41,14 +42,22 @@ export class Spotilocal {
     }
     
     @failIfNotInitialized
-    public getStatus(): Promise<string> {        
+    public getStatus(): Promise<Status> {     
+        return this.genericCommand('status');           
+    }    
+
+    private genericCommand(command: string, additionalProps?: Map<string, string>): Promise<Status> {
+        const additionalQuery = (additionalProps && additionalProps.size) ? `&${Array.from(additionalProps.entries()).reduce((prev, curr) => {
+            return `${prev}&${curr[0]}=${encodeURIComponent(curr[1])}`
+        }, '')}` : '';
         return new Promise((resolve, reject) => {
-            Spotilocal.requestToAbsolutelyUglyNotSecuredRequest(request.get(`${this.spotilocalUrl}remote/status.json?csrf=${this.csrf}&oauth=${this.oauth}`))
+            Spotilocal.requestToAbsolutelyUglyNotSecuredRequest(
+                request.get(`${this.spotilocalUrl}remote/${command}.json?csrf=${this.csrf}&oauth=${this.oauth}${additionalQuery}`))
                 .end((err, res) => {
                     if (err || !res.ok) {
                         reject(err || res.status);
                     } else {
-                        resolve(res.body as string);
+                        resolve(res.body as Status);
                     }
                 })
         });
