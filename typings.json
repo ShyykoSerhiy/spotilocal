@@ -5,7 +5,7 @@
   },
   "globalDependencies": {
     "mocha": "registry:dt/mocha#2.2.5+20160720003353",
-    "node": "registry:dt/node#6.0.0+20160826120425",
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/index.d.ts#8ba335294f5ae4442434fae72293c08792c54cc7",
     "superagent": "registry:dt/superagent#2.0.0+20160811085415"
   }
 }

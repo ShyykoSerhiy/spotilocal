@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es6",
+        "target": "es5",
+        "lib": ["es2015.core","es5","es2015.collection","es2015.iterable","es2015.promise"],
         "noImplicitAny": true,
         "sourceMap": false,
         "experimentalDecorators": true
