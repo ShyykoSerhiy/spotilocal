@@ -32,3 +32,27 @@ describe('#getStatus()', function () {
         }).catch(done);
     });
 });
+
+describe('#pause()', function () {
+    this.timeout(10000);
+    it('should fail if not initialized', function (done) {
+        const spotilocal = new Spotilocal();
+        spotilocal.pause(true).then(() => {
+            done('Should have failed');
+        }).catch((error) => {
+            assert.strictEqual(error, SPOTILOCAL_IS_NOT_INITIALIZED);
+            done();
+        }).catch((error) => {
+            done(error);
+        });
+    });
+
+    it('should get status from spotilocal if initialized', function (done) {
+        const spotilocal = new Spotilocal();
+        spotilocal.init().then((spotilocal) => {
+            return spotilocal.pause(true)
+        }).then((status) => {
+            done();
+        }).catch(done);
+    });
+});

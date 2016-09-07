@@ -46,7 +46,14 @@ export class Spotilocal {
         return this.genericCommand('status');           
     }    
 
-    private genericCommand(command: string, additionalProps?: Map<string, string>): Promise<Status> {
+    @failIfNotInitialized
+    public pause(pause:boolean = true): Promise<Status> {        
+        const params = new Map<string, any>();
+        params.set('pause', pause);     
+        return this.genericCommand('pause', params);           
+    }  
+
+    private genericCommand(command: string, additionalProps?: Map<string, any>): Promise<Status> {
         const additionalQuery = (additionalProps && additionalProps.size) ? `&${Array.from(additionalProps.entries()).reduce((prev, curr) => {
             return `${prev}&${curr[0]}=${encodeURIComponent(curr[1])}`
         }, '')}` : '';
