@@ -45,13 +45,16 @@ export class Spotilocal {
     public getStatus(): Promise<Status> {     
         return this.genericCommand('status');           
     }    
-
+    /**
+     * Pauses(or unpauses) playback of spotify
+     * @param pause if true, then pauses playback. If else resumes playback.
+     */
     @failIfNotInitialized
     public pause(pause:boolean = true): Promise<Status> {        
         const params = new Map<string, any>();
         params.set('pause', pause);     
         return this.genericCommand('pause', params);           
-    }  
+    }
 
     private genericCommand(command: string, additionalProps?: Map<string, any>): Promise<Status> {
         const additionalQuery = (additionalProps && additionalProps.size) ? `&${Array.from(additionalProps.entries()).reduce((prev, curr) => {
