@@ -46,7 +46,7 @@ export class Spotilocal {
         return this.genericCommand('status');           
     }    
     /**
-     * Pauses(or unpauses) playback of spotify
+     * Pauses(or unpauses) playback of spotify.
      * @param pause if true, then pauses playback. If else resumes playback.
      */
     @failIfNotInitialized
@@ -55,6 +55,19 @@ export class Spotilocal {
         params.set('pause', pause);     
         return this.genericCommand('pause', params);           
     }
+
+    /**
+     * Plays song with uri in provided context.
+     * @param uri track uri
+     * @param context context of song(where it exists). Examples: playlist uri, album uri and so on. 
+     */
+    @failIfNotInitialized    
+    public play(uri:string, context?:string): Promise<Status> {        
+        const params = new Map<string, any>();
+        params.set('uri', uri);
+        context && params.set('context', context);     
+        return this.genericCommand('play', params);           
+    }  
 
     private genericCommand(command: string, additionalProps?: Map<string, any>): Promise<Status> {
         const additionalQuery = (additionalProps && additionalProps.size) ? `&${Array.from(additionalProps.entries()).reduce((prev, curr) => {
