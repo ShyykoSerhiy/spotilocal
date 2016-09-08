@@ -1,7 +1,7 @@
 {
   "name": "spotilocal",
   "version": "0.0.1",
-  "description": "Unofficial api for spotify's local web server.",
+  "description": "Unofficial api for Spotify's local web server.",
   "main": "dist/src/index.js",
   "typings": "src/index",
   "scripts": {
