@@ -11,6 +11,10 @@
     "spotify", "spotilocal"
   ],
   "author": "Shyyko Serhiy <shyyko.serhiy@gmail.com>",
+  "repository" : {
+    "type": "git",
+    "url": "https://github.com/ShyykoSerhiy/spotilocal.git"
+  },
   "license": "MIT",
   "dependencies": {
     "chai": "^3.5.0",
