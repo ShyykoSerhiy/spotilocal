@@ -1,3 +1,5 @@
+#IDE
+.idea
 # Logs
 logs
 *.log
@@ -36,5 +38,6 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
-# We don't need js. It's typescript.
+# We don't need js anywhere except dist. It's typescript.
 *.js
+!dist/**/*.js
