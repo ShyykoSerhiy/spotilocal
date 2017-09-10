@@ -20,7 +20,8 @@ function failIfNotInitialized(target, propertyKey, descriptor) {
         } });
 }
 exports.SPOTILOCAL_IS_NOT_INITIALIZED = 'Spotilocal is not initialized';
-var Spotilocal = (function () {
+exports.SPOTILOCAL_IS_NOT_RUNNING = 'It looks like Spotify isn\'t open. We failed to find spotilocal url with ports in range 4370-4380.';
+var Spotilocal = /** @class */ (function () {
     function Spotilocal() {
     }
     Spotilocal.prototype.init = function () {
@@ -116,11 +117,11 @@ var Spotilocal = (function () {
         return new Promise(function (resolve, reject) {
             var tryGetSpotilocalVersion = function (port) {
                 if (port > 4380) {
-                    reject('It looks like Spotify isn\'t open. We failed to find spotilocal url with ports in range 4370-4380.');
+                    reject(exports.SPOTILOCAL_IS_NOT_RUNNING);
                     return;
                 }
                 var possibleUrl = "http://127.0.0.1:" + port + "/";
-                console.log(possibleUrl);
+                //console.log(possibleUrl);
                 Spotilocal.getSpotilocalVersion(possibleUrl).then(function () { resolve(possibleUrl); }).catch(function () {
                     tryGetSpotilocalVersion(port + 1);
                 });
@@ -152,15 +153,15 @@ var Spotilocal = (function () {
             .set('Origin', 'https://open.spotify.com')
             .timeout(1000);
     };
+    __decorate([
+        failIfNotInitialized
+    ], Spotilocal.prototype, "getStatus", null);
+    __decorate([
+        failIfNotInitialized
+    ], Spotilocal.prototype, "pause", null);
+    __decorate([
+        failIfNotInitialized
+    ], Spotilocal.prototype, "play", null);
     return Spotilocal;
 }());
-__decorate([
-    failIfNotInitialized
-], Spotilocal.prototype, "getStatus", null);
-__decorate([
-    failIfNotInitialized
-], Spotilocal.prototype, "pause", null);
-__decorate([
-    failIfNotInitialized
-], Spotilocal.prototype, "play", null);
 exports.Spotilocal = Spotilocal;

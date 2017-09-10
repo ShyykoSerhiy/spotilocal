@@ -18,6 +18,7 @@ function failIfNotInitialized(target: any, propertyKey: string, descriptor: Prop
 } 
 
 export const SPOTILOCAL_IS_NOT_INITIALIZED = 'Spotilocal is not initialized';
+export const SPOTILOCAL_IS_NOT_RUNNING = 'It looks like Spotify isn\'t open. We failed to find spotilocal url with ports in range 4370-4380.';
 
 export class Spotilocal {
     private spotilocalUrl: string;
@@ -125,11 +126,10 @@ export class Spotilocal {
         return new Promise((resolve, reject) => {
             const tryGetSpotilocalVersion = (port: number) => {
                 if (port > 4380) {
-                    reject('It looks like Spotify isn\'t open. We failed to find spotilocal url with ports in range 4370-4380.');
+                    reject(SPOTILOCAL_IS_NOT_RUNNING);
                     return;
                 }
                 const possibleUrl = `http://127.0.0.1:${port}/`;
-                console.log(possibleUrl);
                 Spotilocal.getSpotilocalVersion(possibleUrl).then(() => { resolve(possibleUrl) }).catch(() => {
                     tryGetSpotilocalVersion(port + 1);
                 });
