@@ -5,8 +5,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var request = require('superagent');
-var https = require('https');
+Object.defineProperty(exports, "__esModule", { value: true });
+var request = require("superagent");
 function failIfNotInitialized(target, propertyKey, descriptor) {
     var fn = descriptor.value;
     if (typeof fn !== 'function') {
@@ -110,18 +110,17 @@ var Spotilocal = (function () {
         });
     };
     /**
-     * Gets spotilocal appi url with port in range 4370-4380.
+     * Gets spotilocal api url with port in range 4370-4380.
      */
     Spotilocal.getSpotilocalUrl = function () {
-        var subdomain = 'tommarvoloriddle'.split('').map(function (v, i, arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }).join('');
         return new Promise(function (resolve, reject) {
             var tryGetSpotilocalVersion = function (port) {
                 if (port > 4380) {
-                    reject('It looks like spotify isn\'t open. We failed to find spotiflocal url with ports in range 4370-4380.');
+                    reject('It looks like Spotify isn\'t open. We failed to find spotilocal url with ports in range 4370-4380.');
+                    return;
                 }
-                var possibleUrl = "https://" + subdomain + ".spotilocal.com:" + port + "/";
+                var possibleUrl = "http://127.0.0.1:" + port + "/";
+                console.log(possibleUrl);
                 Spotilocal.getSpotilocalVersion(possibleUrl).then(function () { resolve(possibleUrl); }).catch(function () {
                     tryGetSpotilocalVersion(port + 1);
                 });
@@ -149,19 +148,19 @@ var Spotilocal = (function () {
      * Sets rejectUnauthorized to false, Origin to https://open.spotify.com and timeout to 1000
      */
     Spotilocal.requestToAbsolutelyUglyNotSecuredRequest = function (request) {
-        return request.agent(new https.Agent({ rejectUnauthorized: false }))
+        return request
             .set('Origin', 'https://open.spotify.com')
             .timeout(1000);
     };
-    __decorate([
-        failIfNotInitialized
-    ], Spotilocal.prototype, "getStatus", null);
-    __decorate([
-        failIfNotInitialized
-    ], Spotilocal.prototype, "pause", null);
-    __decorate([
-        failIfNotInitialized
-    ], Spotilocal.prototype, "play", null);
     return Spotilocal;
 }());
+__decorate([
+    failIfNotInitialized
+], Spotilocal.prototype, "getStatus", null);
+__decorate([
+    failIfNotInitialized
+], Spotilocal.prototype, "pause", null);
+__decorate([
+    failIfNotInitialized
+], Spotilocal.prototype, "play", null);
 exports.Spotilocal = Spotilocal;

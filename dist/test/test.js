@@ -1,6 +1,7 @@
 "use strict";
-var index_1 = require('../src/index');
-var chai_1 = require('chai');
+Object.defineProperty(exports, "__esModule", { value: true });
+var index_1 = require("../src/index");
+var chai_1 = require("chai");
 describe('#init()', function () {
     this.timeout(10000);
     it('should init spotilocal', function (done) {

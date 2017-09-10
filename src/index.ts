@@ -1,5 +1,4 @@
 import * as request from 'superagent';
-import * as https from 'https';
 import {Status} from './status';
 
 function failIfNotInitialized(target: any, propertyKey: string, descriptor: PropertyDescriptor):PropertyDescriptor{
@@ -120,19 +119,17 @@ export class Spotilocal {
     }
 
     /**
-     * Gets spotilocal appi url with port in range 4370-4380.
+     * Gets spotilocal api url with port in range 4370-4380.
      */
     public static getSpotilocalUrl(): Promise<string> {
-        const subdomain = 'tommarvoloriddle'.split('').map((v, i, arr) => {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }).join('');
-
         return new Promise((resolve, reject) => {
             const tryGetSpotilocalVersion = (port: number) => {
                 if (port > 4380) {
-                    reject('It looks like spotify isn\'t open. We failed to find spotiflocal url with ports in range 4370-4380.');
+                    reject('It looks like Spotify isn\'t open. We failed to find spotilocal url with ports in range 4370-4380.');
+                    return;
                 }
-                const possibleUrl = `https://${subdomain}.spotilocal.com:${port}/`;
+                const possibleUrl = `http://127.0.0.1:${port}/`;
+                console.log(possibleUrl);
                 Spotilocal.getSpotilocalVersion(possibleUrl).then(() => { resolve(possibleUrl) }).catch(() => {
                     tryGetSpotilocalVersion(port + 1);
                 });
@@ -161,7 +158,7 @@ export class Spotilocal {
      * Sets rejectUnauthorized to false, Origin to https://open.spotify.com and timeout to 1000
      */
     public static requestToAbsolutelyUglyNotSecuredRequest(request: request.SuperAgentRequest): request.SuperAgentRequest {
-        return request.agent(new https.Agent({ rejectUnauthorized: false }))
+        return request
             .set('Origin', 'https://open.spotify.com')
             .timeout(1000);
     }

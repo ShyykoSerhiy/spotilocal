@@ -1,6 +1,6 @@
 import * as request from 'superagent';
 import { Status } from './status';
-export declare const SPOTILOCAL_IS_NOT_INITIALIZED: string;
+export declare const SPOTILOCAL_IS_NOT_INITIALIZED = "Spotilocal is not initialized";
 export declare class Spotilocal {
     private spotilocalUrl;
     private oauth;
@@ -30,7 +30,7 @@ export declare class Spotilocal {
      */
     static getCsrfToken(spotilocalUrl: string): Promise<string>;
     /**
-     * Gets spotilocal appi url with port in range 4370-4380.
+     * Gets spotilocal api url with port in range 4370-4380.
      */
     static getSpotilocalUrl(): Promise<string>;
     /**
