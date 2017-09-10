@@ -1,6 +1,7 @@
 import * as request from 'superagent';
 import { Status } from './status';
 export declare const SPOTILOCAL_IS_NOT_INITIALIZED = "Spotilocal is not initialized";
+export declare const SPOTILOCAL_IS_NOT_RUNNING = "It looks like Spotify isn't open. We failed to find spotilocal url with ports in range 4370-4380.";
 export declare class Spotilocal {
     private spotilocalUrl;
     private oauth;

@@ -61,7 +61,7 @@ describe('#play()', function () {
     this.timeout(10000);
     it('should fail if not initialized', function (done) {
         const spotilocal = new Spotilocal();
-        spotilocal.play('spotify:track:3cANM3NuUjRDTi8fdU8P6q', 'spotify:user:shyyko.serhiy:playlist:4SdN0Re3tJg9uG08z2Gkr1').then(() => {
+        spotilocal.play('spotify:track:23r4eXV6ziw0NNznZU9NiC', 'spotify:user:shyyko.serhiy:playlist:4SdN0Re3tJg9uG08z2Gkr1').then(() => {
             done('Should have failed');
         }).catch((error) => {
             assert.strictEqual(error, SPOTILOCAL_IS_NOT_INITIALIZED);
@@ -86,13 +86,13 @@ describe('#play()', function () {
 
     it('should play song in context and return correct status', function (done) {
         const spotilocal = new Spotilocal();
-        const trackUri = 'spotify:track:3cANM3NuUjRDTi8fdU8P6q';
+        const trackUri = 'spotify:track:7H2zem6ynyk67mqqXDIwDS';
         spotilocal.init().then((spotilocal) => {
             return spotilocal.play(trackUri, 'spotify:user:shyyko.serhiy:playlist:4SdN0Re3tJg9uG08z2Gkr1')
         }).then((status) => {
             assert.strictEqual(status.playing, true);
             assert.strictEqual(status.track.track_resource.uri, trackUri);
-            assert.strictEqual(status.track.track_resource.name, 'Brother');
+            assert.strictEqual(status.track.track_resource.name, 'Creature Fear');
             done();
         }).catch(done);
     });
@@ -101,7 +101,7 @@ describe('#play()', function () {
 describe('#play() and #pause()', function () {
     it('should play song pause it and resume it', function (done) {
         const spotilocal = new Spotilocal();
-        const trackUri = 'spotify:track:3cANM3NuUjRDTi8fdU8P6q';
+        const trackUri = 'spotify:track:23r4eXV6ziw0NNznZU9NiC';
         spotilocal.init().then((spotilocal) => {
             return spotilocal.play(trackUri, 'spotify:user:shyyko.serhiy:playlist:4SdN0Re3tJg9uG08z2Gkr1')
         }).then((status) => {
