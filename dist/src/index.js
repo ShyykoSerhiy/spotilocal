@@ -121,7 +121,6 @@ var Spotilocal = /** @class */ (function () {
                     return;
                 }
                 var possibleUrl = "http://127.0.0.1:" + port + "/";
-                //console.log(possibleUrl);
                 Spotilocal.getSpotilocalVersion(possibleUrl).then(function () { resolve(possibleUrl); }).catch(function () {
                     tryGetSpotilocalVersion(port + 1);
                 });
