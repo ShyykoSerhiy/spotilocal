@@ -16,11 +16,11 @@ of spotilocal.com.
 
 Initializes the Spotilocal client. Returns a Promise for Spotilocal client.
 
-### Spotilocal#getStatus(returnOn?:string, returnAfter?:number)
+### Spotilocal#getStatus(returnOn?:Array<`play`|`pause`|`login`|`logout`|`error`|`ap`>, returnAfter?:number)
 
 Returns a Promise for Status.
 
-returnOn - Activates long-polling to return when one or more specific event(s) occur. Expects comma-separated list. Possible values: `play`, `pause`, `login`, `logout`, `error`
+returnOn - Activates long-polling to return when one or more specific event(s) occur.
 
 returnAfter - Defines a timeout. Pass 0 to disable. Default is 0.
 

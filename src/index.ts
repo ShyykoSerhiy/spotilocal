@@ -1,14 +1,14 @@
 import * as request from 'superagent';
 import {Status} from './status';
 
-function failIfNotInitialized(target: any, propertyKey: string, descriptor: PropertyDescriptor):PropertyDescriptor{
+function failIfNotInitialized(_target: any, _propertyKey: string, descriptor: PropertyDescriptor):PropertyDescriptor{
     const fn = descriptor.value as Function;
 
     if (typeof fn !== 'function'){
         throw new Error(`@failIfNotInitialized can only be applied to method and not to ${typeof fn}`)
     }
 
-    return Object.assign({}, descriptor, {value: function(){
+    return Object.assign({}, descriptor, {value: function(this: Spotilocal){
         if (!this.initialized) {
             return Promise.reject<string>(SPOTILOCAL_IS_NOT_INITIALIZED);
         }         
@@ -19,12 +19,20 @@ function failIfNotInitialized(target: any, propertyKey: string, descriptor: Prop
 
 export const SPOTILOCAL_IS_NOT_INITIALIZED = 'Spotilocal is not initialized';
 export const SPOTILOCAL_IS_NOT_RUNNING = 'It looks like Spotify isn\'t open. We failed to find spotilocal url with ports in range 4370-4380.';
+export const RETURN_ON_PLAY = 'play' as 'play';
+export const RETURN_ON_PAUSE = 'pause' as 'pause';
+export const RETURN_ON_LOGIN = 'login' as 'login';
+export const RETURN_ON_LOGOUT = 'logout' as 'logout';
+export const RETURN_ON_ERROR = 'error' as 'error';
+export const RETURN_ON_AP = 'ap' as 'ap';
+
+export type ReturnOnParam = typeof RETURN_ON_PLAY | typeof RETURN_ON_PAUSE | typeof RETURN_ON_LOGIN | typeof RETURN_ON_LOGOUT | typeof RETURN_ON_ERROR | typeof RETURN_ON_AP;
 
 export class Spotilocal {
+    public initialized: boolean;
     private spotilocalUrl: string;
     private oauth: string;
-    private csrf: string;
-    private initialized: boolean;
+    private csrf: string;    
 
     constructor() {
     }
@@ -42,12 +50,12 @@ export class Spotilocal {
     }
 
     @failIfNotInitialized
-    public getStatus(returnOn?: string, returnAfter: number = 0): Promise<Status> {
+    public getStatus(returnOn?: ReturnOnParam[], returnAfter: number = 0): Promise<Status> {
         let timeout = 1000;
 
         const params = new Map<string, any>();
-        if (returnOn) {
-            params.set('returnon', returnOn);
+        if (returnOn && returnOn.length) {
+            params.set('returnon', returnOn.join(','));
             params.set('returnafter', returnAfter); // 0 disables the timeout, passing -1 can cause spontaneous high CPU usage
 
             if (returnAfter === 0) timeout = 0;
