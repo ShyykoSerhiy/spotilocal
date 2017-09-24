@@ -5,7 +5,7 @@
   "main": "dist/src/index.js",
   "typings": "dist/src/index",
   "scripts": {
-    "test": "tsc && mocha \"dist/test/**/*.js\""
+    "test": "./node_modules/typescript/bin/tsc && mocha \"dist/test/**/*.js\""
   },
   "keywords": [
     "spotify", "spotilocal"
