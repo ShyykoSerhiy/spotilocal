@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var request = require("superagent");
-function failIfNotInitialized(target, propertyKey, descriptor) {
+function failIfNotInitialized(_target, _propertyKey, descriptor) {
     var fn = descriptor.value;
     if (typeof fn !== 'function') {
         throw new Error("@failIfNotInitialized can only be applied to method and not to " + typeof fn);
@@ -21,6 +21,12 @@ function failIfNotInitialized(target, propertyKey, descriptor) {
 }
 exports.SPOTILOCAL_IS_NOT_INITIALIZED = 'Spotilocal is not initialized';
 exports.SPOTILOCAL_IS_NOT_RUNNING = 'It looks like Spotify isn\'t open. We failed to find spotilocal url with ports in range 4370-4380.';
+exports.RETURN_ON_PLAY = 'play';
+exports.RETURN_ON_PAUSE = 'pause';
+exports.RETURN_ON_LOGIN = 'login';
+exports.RETURN_ON_LOGOUT = 'logout';
+exports.RETURN_ON_ERROR = 'error';
+exports.RETURN_ON_AP = 'ap';
 var Spotilocal = /** @class */ (function () {
     function Spotilocal() {
     }
@@ -40,13 +46,13 @@ var Spotilocal = /** @class */ (function () {
         if (returnAfter === void 0) { returnAfter = 0; }
         var timeout = 1000;
         var params = new Map();
-        if (returnOn) {
-            params.set('returnon', returnOn);
+        if (returnOn && returnOn.length) {
+            params.set('returnon', returnOn.join(','));
             params.set('returnafter', returnAfter); // 0 disables the timeout, passing -1 can cause spontaneous high CPU usage
             if (returnAfter === 0)
                 timeout = 0;
             else
-                timeout = returnAfter + 1000;
+                timeout = (returnAfter * 1000) + 1000;
         }
         return this.genericCommand('status', params, timeout);
     };

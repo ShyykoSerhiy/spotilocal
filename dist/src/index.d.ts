@@ -2,14 +2,21 @@ import * as request from 'superagent';
 import { Status } from './status';
 export declare const SPOTILOCAL_IS_NOT_INITIALIZED = "Spotilocal is not initialized";
 export declare const SPOTILOCAL_IS_NOT_RUNNING = "It looks like Spotify isn't open. We failed to find spotilocal url with ports in range 4370-4380.";
+export declare const RETURN_ON_PLAY: "play";
+export declare const RETURN_ON_PAUSE: "pause";
+export declare const RETURN_ON_LOGIN: "login";
+export declare const RETURN_ON_LOGOUT: "logout";
+export declare const RETURN_ON_ERROR: "error";
+export declare const RETURN_ON_AP: "ap";
+export declare type ReturnOnParam = typeof RETURN_ON_PLAY | typeof RETURN_ON_PAUSE | typeof RETURN_ON_LOGIN | typeof RETURN_ON_LOGOUT | typeof RETURN_ON_ERROR | typeof RETURN_ON_AP;
 export declare class Spotilocal {
+    initialized: boolean;
     private spotilocalUrl;
     private oauth;
     private csrf;
-    private initialized;
     constructor();
     init(): Promise<Spotilocal>;
-    getStatus(returnOn?: string, returnAfter?: number): Promise<Status>;
+    getStatus(returnOn?: ReturnOnParam[], returnAfter?: number): Promise<Status>;
     /**
      * Pauses(or unpauses) playback of spotify.
      * @param pause if true, then pauses playback. If else resumes playback.

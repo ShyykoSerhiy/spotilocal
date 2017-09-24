@@ -26,7 +26,7 @@ describe('#getStatus()', function () {
         var spotilocal = new index_1.Spotilocal();
         spotilocal.init().then(function (spotilocal) {
             return spotilocal.getStatus();
-        }).then(function (status) {
+        }).then(function (_status) {
             done();
         }).catch(done);
     });
@@ -48,7 +48,7 @@ describe('#pause()', function () {
         var spotilocal = new index_1.Spotilocal();
         spotilocal.init().then(function (spotilocal) {
             return spotilocal.pause(true);
-        }).then(function (status) {
+        }).then(function (_status) {
             done();
         }).catch(done);
     });
@@ -92,6 +92,7 @@ describe('#play()', function () {
     });
 });
 describe('#play() and #pause()', function () {
+    this.timeout(10000);
     it('should play song pause it and resume it', function (done) {
         var spotilocal = new index_1.Spotilocal();
         var trackUri = 'spotify:track:23r4eXV6ziw0NNznZU9NiC';
@@ -108,6 +109,40 @@ describe('#play() and #pause()', function () {
         }).then(function (status) {
             chai_1.assert.strictEqual(status.playing, true);
             chai_1.assert.strictEqual(status.track.track_resource.uri, trackUri);
+            return spotilocal.pause(true);
+        }).then(function (status) {
+            chai_1.assert.strictEqual(status.playing, false);
+            chai_1.assert.strictEqual(status.track.track_resource.uri, trackUri);
+            done();
+        }).catch(done);
+    });
+});
+describe('#getStatus() with returnOn', function () {
+    this.timeout(10000);
+    var returnOn = ['play', 'pause'];
+    it('should fail if not initialized', function (done) {
+        var spotilocal = new index_1.Spotilocal();
+        spotilocal.getStatus(returnOn).then(function () {
+            done('Should have failed');
+        }).catch(function (error) {
+            chai_1.assert.strictEqual(error, index_1.SPOTILOCAL_IS_NOT_INITIALIZED);
+            done();
+        }).catch(function (error) {
+            done(error);
+        });
+    });
+    it('should get status from spotilocal if initialized', function (done) {
+        var spotilocal = new index_1.Spotilocal();
+        var start = 0;
+        spotilocal.init().then(function (spotilocal) {
+            start = +new Date();
+            setTimeout(function () {
+                spotilocal.play('spotify:track:23r4eXV6ziw0NNznZU9NiC', 'spotify:user:shyyko.serhiy:playlist:4SdN0Re3tJg9uG08z2Gkr1');
+            }, 1000);
+            return spotilocal.getStatus(returnOn);
+        }).then(function (status) {
+            chai_1.assert.strictEqual(status.playing, true);
+            chai_1.assert.isAbove(+new Date() - start, 1000);
             done();
         }).catch(done);
     });
