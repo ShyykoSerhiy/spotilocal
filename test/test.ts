@@ -1,7 +1,11 @@
-import {Spotilocal, SPOTILOCAL_IS_NOT_INITIALIZED} from '../src/index';
-import {assert} from 'chai';
+import { Spotilocal, SPOTILOCAL_IS_NOT_INITIALIZED, ReturnOnParam } from '../src/index';
+import { assert } from 'chai';
 
-describe('#init()', function () {
+interface IWithTimeout {
+    timeout: (timeout: number) => void
+}
+
+describe('#init()', function (this: IWithTimeout) {
     this.timeout(10000);
     it('should init spotilocal', function (done) {
         const spotilocal = new Spotilocal();
@@ -9,7 +13,7 @@ describe('#init()', function () {
     });
 });
 
-describe('#getStatus()', function () {
+describe('#getStatus()', function (this: IWithTimeout) {
     this.timeout(10000);
     it('should fail if not initialized', function (done) {
         const spotilocal = new Spotilocal();
@@ -27,13 +31,13 @@ describe('#getStatus()', function () {
         const spotilocal = new Spotilocal();
         spotilocal.init().then((spotilocal) => {
             return spotilocal.getStatus()
-        }).then((status) => {
+        }).then((_status) => {
             done();
         }).catch(done);
     });
 });
 
-describe('#pause()', function () {
+describe('#pause()', function (this: IWithTimeout) {
     this.timeout(10000);
     it('should fail if not initialized', function (done) {
         const spotilocal = new Spotilocal();
@@ -51,13 +55,13 @@ describe('#pause()', function () {
         const spotilocal = new Spotilocal();
         spotilocal.init().then((spotilocal) => {
             return spotilocal.pause(true)
-        }).then((status) => {
+        }).then((_status) => {
             done();
         }).catch(done);
     });
 });
 
-describe('#play()', function () {
+describe('#play()', function (this: IWithTimeout) {
     this.timeout(10000);
     it('should fail if not initialized', function (done) {
         const spotilocal = new Spotilocal();
@@ -98,7 +102,8 @@ describe('#play()', function () {
     });
 });
 
-describe('#play() and #pause()', function () {
+describe('#play() and #pause()', function (this: IWithTimeout) {
+    this.timeout(10000);
     it('should play song pause it and resume it', function (done) {
         const spotilocal = new Spotilocal();
         const trackUri = 'spotify:track:23r4eXV6ziw0NNznZU9NiC';
@@ -108,14 +113,50 @@ describe('#play() and #pause()', function () {
             assert.strictEqual(status.playing, true);
             assert.strictEqual(status.track.track_resource.uri, trackUri);
             return spotilocal.pause(true);
-        }).then((status)=>{
+        }).then((status) => {
             assert.strictEqual(status.playing, false);
             assert.strictEqual(status.track.track_resource.uri, trackUri);
-            return spotilocal.pause(false);            
-        }).then((status)=>{
+            return spotilocal.pause(false);
+        }).then((status) => {
             assert.strictEqual(status.playing, true);
             assert.strictEqual(status.track.track_resource.uri, trackUri);
-            done();         
+            return spotilocal.pause(true);
+        }).then((status) => {
+            assert.strictEqual(status.playing, false);
+            assert.strictEqual(status.track.track_resource.uri, trackUri);
+            done();
+        }).catch(done);
+    });
+});
+
+describe('#getStatus() with returnOn', function (this: IWithTimeout) {
+    this.timeout(10000);
+    const returnOn: ReturnOnParam[] = ['play', 'pause'];
+    it('should fail if not initialized', function (done) {
+        const spotilocal = new Spotilocal();
+        spotilocal.getStatus(returnOn).then(() => {
+            done('Should have failed');
+        }).catch((error) => {
+            assert.strictEqual(error, SPOTILOCAL_IS_NOT_INITIALIZED);
+            done();
+        }).catch((error) => {
+            done(error);
+        });
+    });
+
+    it('should get status from spotilocal if initialized', function (done) {
+        const spotilocal = new Spotilocal();
+        let start = 0;
+        spotilocal.init().then((spotilocal) => {
+            start = +new Date();
+            setTimeout(() => {
+                spotilocal.play('spotify:track:23r4eXV6ziw0NNznZU9NiC', 'spotify:user:shyyko.serhiy:playlist:4SdN0Re3tJg9uG08z2Gkr1')
+            }, 1000)
+            return spotilocal.getStatus(returnOn)
+        }).then((status) => {
+            assert.strictEqual(status.playing, true);            
+            assert.isAbove(+new Date() - start, 1000);            
+            done();
         }).catch(done);
     });
 });
