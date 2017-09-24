@@ -10,6 +10,7 @@ export declare class Spotilocal {
     constructor();
     init(): Promise<Spotilocal>;
     getStatus(): Promise<Status>;
+    pollStatus(cb: (status: Status) => void): Promise<void>;
     /**
      * Pauses(or unpauses) playback of spotify.
      * @param pause if true, then pauses playback. If else resumes playback.
@@ -21,7 +22,7 @@ export declare class Spotilocal {
      * @param context context of song(where it exists). Examples: playlist uri, album uri and so on.
      */
     play(uri: string, context?: string): Promise<Status>;
-    private genericCommand(command, additionalProps?);
+    private genericCommand(command, additionalProps?, timeout?);
     /**
      * Gets oauth token that will be used in all later calls to spotilocal
      */
@@ -41,5 +42,5 @@ export declare class Spotilocal {
     /**
      * Sets rejectUnauthorized to false, Origin to https://open.spotify.com and timeout to 1000
      */
-    static requestToAbsolutelyUglyNotSecuredRequest(request: request.SuperAgentRequest): request.SuperAgentRequest;
+    static requestToAbsolutelyUglyNotSecuredRequest(request: request.SuperAgentRequest, timeout?: boolean): request.SuperAgentRequest;
 }

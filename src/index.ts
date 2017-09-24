@@ -44,7 +44,23 @@ export class Spotilocal {
     @failIfNotInitialized
     public getStatus(): Promise<Status> {     
         return this.genericCommand('status');           
-    }    
+    }
+
+    @failIfNotInitialized
+    public pollStatus(cb: (status: Status) => void): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const _poll = () => {
+                const params = new Map<string, any>();
+                params.set('returnafter', -1);
+                params.set('returnon', 'play,pause'); // TODO: Check out "login", "logout", "error" and "ap"
+                this.genericCommand('status', params, false).then(status => {
+                    cb(status);
+                    _poll();
+                }).catch(reject);
+            }
+            _poll();
+        });
+    }
     /**
      * Pauses(or unpauses) playback of spotify.
      * @param pause if true, then pauses playback. If else resumes playback.
@@ -69,13 +85,13 @@ export class Spotilocal {
         return this.genericCommand('play', params);           
     }  
 
-    private genericCommand(command: string, additionalProps?: Map<string, any>): Promise<Status> {
+    private genericCommand(command: string, additionalProps?: Map<string, any>, timeout: boolean = true): Promise<Status> {
         const additionalQuery = (additionalProps && additionalProps.size) ? `&${Array.from(additionalProps.entries()).reduce((prev, curr) => {
             return `${prev}&${curr[0]}=${encodeURIComponent(curr[1])}`
         }, '')}` : '';
         return new Promise((resolve, reject) => {
             Spotilocal.requestToAbsolutelyUglyNotSecuredRequest(
-                request.get(`${this.spotilocalUrl}remote/${command}.json?csrf=${this.csrf}&oauth=${this.oauth}${additionalQuery}`))
+                request.get(`${this.spotilocalUrl}remote/${command}.json?csrf=${this.csrf}&oauth=${this.oauth}${additionalQuery}`), timeout)
                 .end((err, res) => {
                     if (err || !res.ok) {
                         reject(err || res.status);
@@ -157,9 +173,12 @@ export class Spotilocal {
     /**
      * Sets rejectUnauthorized to false, Origin to https://open.spotify.com and timeout to 1000
      */
-    public static requestToAbsolutelyUglyNotSecuredRequest(request: request.SuperAgentRequest): request.SuperAgentRequest {
-        return request
-            .set('Origin', 'https://open.spotify.com')
-            .timeout(1000);
+    public static requestToAbsolutelyUglyNotSecuredRequest(request: request.SuperAgentRequest, timeout: boolean = true): request.SuperAgentRequest {
+        const req = request.set('Origin', 'https://open.spotify.com');
+        if (timeout) {
+            req.timeout(1000);
+        }
+
+        return req;
     }
 }
