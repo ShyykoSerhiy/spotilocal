@@ -36,23 +36,19 @@ var Spotilocal = /** @class */ (function () {
             return _this;
         });
     };
-    Spotilocal.prototype.getStatus = function () {
-        return this.genericCommand('status');
-    };
-    Spotilocal.prototype.pollStatus = function (cb) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var _poll = function () {
-                var params = new Map();
-                params.set('returnafter', 0); // 0 disables the timeout, passing -1 can cause spontaneous high CPU usage
-                params.set('returnon', 'play,pause');
-                _this.genericCommand('status', params, false).then(function (status) {
-                    cb(status);
-                    _poll();
-                }).catch(reject);
-            };
-            _poll();
-        });
+    Spotilocal.prototype.getStatus = function (returnOn, returnAfter) {
+        if (returnAfter === void 0) { returnAfter = 0; }
+        var timeout = 1000;
+        var params = new Map();
+        if (returnOn) {
+            params.set('returnon', returnOn);
+            params.set('returnafter', returnAfter); // 0 disables the timeout, passing -1 can cause spontaneous high CPU usage
+            if (returnAfter === 0)
+                timeout = 0;
+            else
+                timeout = returnAfter + 1000;
+        }
+        return this.genericCommand('status', params, timeout);
     };
     /**
      * Pauses(or unpauses) playback of spotify.
@@ -77,7 +73,6 @@ var Spotilocal = /** @class */ (function () {
     };
     Spotilocal.prototype.genericCommand = function (command, additionalProps, timeout) {
         var _this = this;
-        if (timeout === void 0) { timeout = true; }
         var additionalQuery = (additionalProps && additionalProps.size) ? "&" + Array.from(additionalProps.entries()).reduce(function (prev, curr) {
             return prev + "&" + curr[0] + "=" + encodeURIComponent(curr[1]);
         }, '') : '';
@@ -164,19 +159,16 @@ var Spotilocal = /** @class */ (function () {
      * Sets rejectUnauthorized to false, Origin to https://open.spotify.com and timeout to 1000
      */
     Spotilocal.requestToAbsolutelyUglyNotSecuredRequest = function (request, timeout) {
-        if (timeout === void 0) { timeout = true; }
+        if (timeout === void 0) { timeout = 1000; }
         var req = request.set('Origin', 'https://open.spotify.com');
-        if (timeout) {
-            req.timeout(1000);
+        if (timeout !== 0) {
+            req.timeout(timeout);
         }
         return req;
     };
     __decorate([
         failIfNotInitialized
     ], Spotilocal.prototype, "getStatus", null);
-    __decorate([
-        failIfNotInitialized
-    ], Spotilocal.prototype, "pollStatus", null);
     __decorate([
         failIfNotInitialized
     ], Spotilocal.prototype, "pause", null);

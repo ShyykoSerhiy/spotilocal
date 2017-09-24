@@ -9,8 +9,7 @@ export declare class Spotilocal {
     private initialized;
     constructor();
     init(): Promise<Spotilocal>;
-    getStatus(): Promise<Status>;
-    pollStatus(cb: (status: Status) => void): Promise<void>;
+    getStatus(returnOn?: string, returnAfter?: number): Promise<Status>;
     /**
      * Pauses(or unpauses) playback of spotify.
      * @param pause if true, then pauses playback. If else resumes playback.
@@ -42,5 +41,5 @@ export declare class Spotilocal {
     /**
      * Sets rejectUnauthorized to false, Origin to https://open.spotify.com and timeout to 1000
      */
-    static requestToAbsolutelyUglyNotSecuredRequest(request: request.SuperAgentRequest, timeout?: boolean): request.SuperAgentRequest;
+    static requestToAbsolutelyUglyNotSecuredRequest(request: request.SuperAgentRequest, timeout?: number): request.SuperAgentRequest;
 }

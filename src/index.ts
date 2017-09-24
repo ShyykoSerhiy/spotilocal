@@ -40,27 +40,23 @@ export class Spotilocal {
             return this;
         })
     }
-    
-    @failIfNotInitialized
-    public getStatus(): Promise<Status> {     
-        return this.genericCommand('status');           
-    }
 
     @failIfNotInitialized
-    public pollStatus(cb: (status: Status) => void): Promise<void> {
-        return new Promise((resolve, reject) => {
-            const _poll = () => {
-                const params = new Map<string, any>();
-                params.set('returnafter', 0); // 0 disables the timeout, passing -1 can cause spontaneous high CPU usage
-                params.set('returnon', 'play,pause');
-                this.genericCommand('status', params, false).then(status => {
-                    cb(status);
-                    _poll();
-                }).catch(reject);
-            }
-            _poll();
-        });
+    public getStatus(returnOn?: string, returnAfter: number = 0): Promise<Status> {
+        let timeout = 1000;
+
+        const params = new Map<string, any>();
+        if (returnOn) {
+            params.set('returnon', returnOn);
+            params.set('returnafter', returnAfter); // 0 disables the timeout, passing -1 can cause spontaneous high CPU usage
+
+            if (returnAfter === 0) timeout = 0;
+            else timeout = (returnAfter * 1000) + 1000;
+        }
+
+        return this.genericCommand('status', params, timeout);
     }
+
     /**
      * Pauses(or unpauses) playback of spotify.
      * @param pause if true, then pauses playback. If else resumes playback.
@@ -85,7 +81,7 @@ export class Spotilocal {
         return this.genericCommand('play', params);           
     }  
 
-    private genericCommand(command: string, additionalProps?: Map<string, any>, timeout: boolean = true): Promise<Status> {
+    private genericCommand(command: string, additionalProps?: Map<string, any>, timeout?: number): Promise<Status> {
         const additionalQuery = (additionalProps && additionalProps.size) ? `&${Array.from(additionalProps.entries()).reduce((prev, curr) => {
             return `${prev}&${curr[0]}=${encodeURIComponent(curr[1])}`
         }, '')}` : '';
@@ -173,10 +169,10 @@ export class Spotilocal {
     /**
      * Sets rejectUnauthorized to false, Origin to https://open.spotify.com and timeout to 1000
      */
-    public static requestToAbsolutelyUglyNotSecuredRequest(request: request.SuperAgentRequest, timeout: boolean = true): request.SuperAgentRequest {
+    public static requestToAbsolutelyUglyNotSecuredRequest(request: request.SuperAgentRequest, timeout: number = 1000): request.SuperAgentRequest {
         const req = request.set('Origin', 'https://open.spotify.com');
-        if (timeout) {
-            req.timeout(1000);
+        if (timeout !== 0) { // Disable timeout if set to 0
+            req.timeout(timeout);
         }
 
         return req;
