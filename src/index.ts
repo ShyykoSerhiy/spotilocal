@@ -51,8 +51,8 @@ export class Spotilocal {
         return new Promise((resolve, reject) => {
             const _poll = () => {
                 const params = new Map<string, any>();
-                params.set('returnafter', -1);
-                params.set('returnon', 'play,pause'); // TODO: Check out "login", "logout", "error" and "ap"
+                params.set('returnafter', 0); // 0 disables the timeout, passing -1 can cause spontaneous high CPU usage
+                params.set('returnon', 'play,pause');
                 this.genericCommand('status', params, false).then(status => {
                     cb(status);
                     _poll();
