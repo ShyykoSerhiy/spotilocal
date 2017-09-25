@@ -140,12 +140,12 @@ export class Spotilocal {
     }
 
     /**
-     * Gets spotilocal api url with port in range 4370-4380.
+     * Gets spotilocal api url with port in range 4370-4389.
      */
     public static getSpotilocalUrl(): Promise<string> {
         return new Promise((resolve, reject) => {
             const tryGetSpotilocalVersion = (port: number) => {
-                if (port > 4380) {
+                if (port > 4389) {
                     reject(SPOTILOCAL_IS_NOT_RUNNING);
                     return;
                 }
