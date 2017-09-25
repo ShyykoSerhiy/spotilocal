@@ -1,12 +1,12 @@
 {
   "name": "spotilocal",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Unofficial api for Spotify's local web server.",
   "main": "dist/src/index.js",
   "typings": "dist/src/index",
   "scripts": {
     "test": "./node_modules/typescript/bin/tsc && mocha \"dist/test/**/*.js\"",
-    "release": "standard-version"
+    "release": "yarn test && standard-version"
   },
   "keywords": [
     "spotify",
