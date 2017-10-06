@@ -31,15 +31,20 @@ export type ReturnOnParam = typeof RETURN_ON_PLAY | typeof RETURN_ON_PAUSE | typ
 export class Spotilocal {
     public initialized: boolean;
     private spotilocalUrl: string;
+    private _port: number;
+    public get port(): number {
+        return this._port;
+    }
     private oauth: string;
     private csrf: string;    
 
     constructor() {
     }
 
-    public init(): Promise<Spotilocal> {
-        return Spotilocal.getSpotilocalUrl().then((spotilocalUrl: string) => {
-            this.spotilocalUrl = spotilocalUrl;
+    public init(defaultPort?: number): Promise<Spotilocal> {
+        return Spotilocal.getSpotilocalUrl(defaultPort).then(port => {
+            this.spotilocalUrl = `http://127.0.0.1:${port}/`;
+            this._port = port;
             return Promise.all([Spotilocal.getOauthToken(), Spotilocal.getCsrfToken(this.spotilocalUrl)]);
         }).then((value) => {
             this.oauth = value[0];
@@ -142,19 +147,25 @@ export class Spotilocal {
     /**
      * Gets spotilocal api url with port in range 4370-4389.
      */
-    public static getSpotilocalUrl(): Promise<string> {
+    public static getSpotilocalUrl(defaultPort?: number): Promise<number> {
         return new Promise((resolve, reject) => {
             const tryGetSpotilocalVersion = (port: number) => {
                 if (port > 4389) {
                     reject(SPOTILOCAL_IS_NOT_RUNNING);
                     return;
                 }
-                const possibleUrl = `http://127.0.0.1:${port}/`;
-                Spotilocal.getSpotilocalVersion(possibleUrl).then(() => { resolve(possibleUrl) }).catch(() => {
+                Spotilocal.getSpotilocalVersion(`http://127.0.0.1:${port}/`).then(() => { resolve(port) }).catch(() => {
                     tryGetSpotilocalVersion(port + 1);
                 });
             }
-            tryGetSpotilocalVersion(4370);
+
+            if (defaultPort) {
+                Spotilocal.getSpotilocalVersion(`http://127.0.0.1:${defaultPort}/`).then(() => { resolve(defaultPort) }).catch(() => {
+                    tryGetSpotilocalVersion(4370);
+                });
+            } else {
+                tryGetSpotilocalVersion(4370);
+            }
         });
     }
 

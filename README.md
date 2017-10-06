@@ -12,9 +12,11 @@ of spotilocal.com.
 
 ## Api
 
-### Spotilocal#init()
+### Spotilocal#init(defaultPort?:number)
 
 Initializes the Spotilocal client. Returns a Promise for Spotilocal client.
+
+defaultPort - Port to try first.
 
 ### Spotilocal#getStatus(returnOn?:Array<`play`|`pause`|`login`|`logout`|`error`|`ap`>, returnAfter?:number)
 
