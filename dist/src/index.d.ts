@@ -12,10 +12,12 @@ export declare type ReturnOnParam = typeof RETURN_ON_PLAY | typeof RETURN_ON_PAU
 export declare class Spotilocal {
     initialized: boolean;
     private spotilocalUrl;
+    private _port;
+    readonly port: number;
     private oauth;
     private csrf;
     constructor();
-    init(): Promise<Spotilocal>;
+    init(defaultPort?: number): Promise<Spotilocal>;
     getStatus(returnOn?: ReturnOnParam[], returnAfter?: number): Promise<Status>;
     /**
      * Pauses(or unpauses) playback of spotify.
@@ -38,9 +40,9 @@ export declare class Spotilocal {
      */
     static getCsrfToken(spotilocalUrl: string): Promise<string>;
     /**
-     * Gets spotilocal api url with port in range 4370-4380.
+     * Gets spotilocal api url with port in range 4370-4389.
      */
-    static getSpotilocalUrl(): Promise<string>;
+    static getSpotilocalUrl(defaultPort?: number): Promise<number>;
     /**
      * Gets spotilocal version (presumably version of spotify local server)
      */
@@ -49,4 +51,5 @@ export declare class Spotilocal {
      * Sets rejectUnauthorized to false, Origin to https://open.spotify.com and timeout to 1000
      */
     static requestToAbsolutelyUglyNotSecuredRequest(request: request.SuperAgentRequest, timeout?: number): request.SuperAgentRequest;
+    private static getSpotilocalUrlByPort(port);
 }

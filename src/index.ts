@@ -43,7 +43,7 @@ export class Spotilocal {
 
     public init(defaultPort?: number): Promise<Spotilocal> {
         return Spotilocal.getSpotilocalUrl(defaultPort).then(port => {
-            this.spotilocalUrl = `http://127.0.0.1:${port}/`;
+            this.spotilocalUrl = Spotilocal.getSpotilocalUrlByPort(port);
             this._port = port;
             return Promise.all([Spotilocal.getOauthToken(), Spotilocal.getCsrfToken(this.spotilocalUrl)]);
         }).then((value) => {
@@ -154,13 +154,13 @@ export class Spotilocal {
                     reject(SPOTILOCAL_IS_NOT_RUNNING);
                     return;
                 }
-                Spotilocal.getSpotilocalVersion(`http://127.0.0.1:${port}/`).then(() => { resolve(port) }).catch(() => {
+                Spotilocal.getSpotilocalVersion(Spotilocal.getSpotilocalUrlByPort(port)).then(() => { resolve(port) }).catch(() => {
                     tryGetSpotilocalVersion(port + 1);
                 });
             }
 
             if (defaultPort) {
-                Spotilocal.getSpotilocalVersion(`http://127.0.0.1:${defaultPort}/`).then(() => { resolve(defaultPort) }).catch(() => {
+                Spotilocal.getSpotilocalVersion(Spotilocal.getSpotilocalUrlByPort(defaultPort)).then(() => { resolve(defaultPort) }).catch(() => {
                     tryGetSpotilocalVersion(4370);
                 });
             } else {
@@ -195,5 +195,9 @@ export class Spotilocal {
         }
 
         return req;
+    }
+
+    private static getSpotilocalUrlByPort(port: number) {
+        return `http://127.0.0.1:${port}/`;
     }
 }

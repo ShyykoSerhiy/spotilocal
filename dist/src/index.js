@@ -30,10 +30,18 @@ exports.RETURN_ON_AP = 'ap';
 var Spotilocal = /** @class */ (function () {
     function Spotilocal() {
     }
-    Spotilocal.prototype.init = function () {
+    Object.defineProperty(Spotilocal.prototype, "port", {
+        get: function () {
+            return this._port;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Spotilocal.prototype.init = function (defaultPort) {
         var _this = this;
-        return Spotilocal.getSpotilocalUrl().then(function (spotilocalUrl) {
-            _this.spotilocalUrl = spotilocalUrl;
+        return Spotilocal.getSpotilocalUrl(defaultPort).then(function (port) {
+            _this.spotilocalUrl = Spotilocal.getSpotilocalUrlByPort(port);
+            _this._port = port;
             return Promise.all([Spotilocal.getOauthToken(), Spotilocal.getCsrfToken(_this.spotilocalUrl)]);
         }).then(function (value) {
             _this.oauth = value[0];
@@ -128,21 +136,27 @@ var Spotilocal = /** @class */ (function () {
         });
     };
     /**
-     * Gets spotilocal api url with port in range 4370-4380.
+     * Gets spotilocal api url with port in range 4370-4389.
      */
-    Spotilocal.getSpotilocalUrl = function () {
+    Spotilocal.getSpotilocalUrl = function (defaultPort) {
         return new Promise(function (resolve, reject) {
             var tryGetSpotilocalVersion = function (port) {
-                if (port > 4380) {
+                if (port > 4389) {
                     reject(exports.SPOTILOCAL_IS_NOT_RUNNING);
                     return;
                 }
-                var possibleUrl = "http://127.0.0.1:" + port + "/";
-                Spotilocal.getSpotilocalVersion(possibleUrl).then(function () { resolve(possibleUrl); }).catch(function () {
+                Spotilocal.getSpotilocalVersion(Spotilocal.getSpotilocalUrlByPort(port)).then(function () { resolve(port); }).catch(function () {
                     tryGetSpotilocalVersion(port + 1);
                 });
             };
-            tryGetSpotilocalVersion(4370);
+            if (defaultPort) {
+                Spotilocal.getSpotilocalVersion(Spotilocal.getSpotilocalUrlByPort(defaultPort)).then(function () { resolve(defaultPort); }).catch(function () {
+                    tryGetSpotilocalVersion(4370);
+                });
+            }
+            else {
+                tryGetSpotilocalVersion(4370);
+            }
         });
     };
     /**
@@ -171,6 +185,9 @@ var Spotilocal = /** @class */ (function () {
             req.timeout(timeout);
         }
         return req;
+    };
+    Spotilocal.getSpotilocalUrlByPort = function (port) {
+        return "http://127.0.0.1:" + port + "/";
     };
     __decorate([
         failIfNotInitialized
