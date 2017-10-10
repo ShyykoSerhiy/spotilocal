@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.3"></a>
+## [0.4.3](https://github.com/ShyykoSerhiy/spotilocal/compare/v0.4.2...v0.4.3) (2017-10-10)
+
+
+### Bug Fixes
+
+* added getSpotilocalUrlByPort to fix code duplication ([7c0b950](https://github.com/ShyykoSerhiy/spotilocal/commit/7c0b950))
+
+
+
 <a name="0.4.2"></a>
 ## [0.4.2](https://github.com/ShyykoSerhiy/spotilocal/compare/v0.4.1...v0.4.2) (2017-09-25)
 
