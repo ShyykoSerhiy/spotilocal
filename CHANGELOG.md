@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 * added getSpotilocalUrlByPort to fix code duplication ([7c0b950](https://github.com/ShyykoSerhiy/spotilocal/commit/7c0b950))
 
+### Features
+
+* Added defaultPort param to init method
 
 
 <a name="0.4.2"></a>
