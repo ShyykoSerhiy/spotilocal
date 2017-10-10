@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.4"></a>
+## [0.4.4](https://github.com/ShyykoSerhiy/spotilocal/compare/v0.4.3...v0.4.4) (2017-10-10)
+
+
+### Bug Fixes
+
+* changelog ([d82a688](https://github.com/ShyykoSerhiy/spotilocal/commit/d82a688))
+
+
+
 <a name="0.4.3"></a>
 ## [0.4.3](https://github.com/ShyykoSerhiy/spotilocal/compare/v0.4.2...v0.4.3) (2017-10-10)
 
